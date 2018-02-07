@@ -1,26 +1,27 @@
 //////////////////////////////////////////////////////////////////////////////////
-var container, scene, camera, renderer, controls, stats, object, starship;
+var container, scene, camera, renderer, controls, stats, object, starship, particle;
 var clock = new THREE.Clock();
 var clock2 = new THREE.Clock();
 
+var MAIN = 0;
 var score = 0;
 var moveSpeed = 1.5;
 var speed = 30;
 
 var aspect = window.innerWidth / window.innerHeight;
-
+// TEXTURE
 var textureCity = THREE.ImageUtils.loadTexture('../assets/img/city.jpeg');
 var cityMaterial = new THREE.MeshBasicMaterial({map: textureCity});
 var textureWall = THREE.ImageUtils.loadTexture('../assets/img/wall.jpeg');
 var wallMaterial = new THREE.MeshBasicMaterial({map: textureWall});
 var textureCyl = THREE.ImageUtils.loadTexture('../assets/img/cyl.png');
 var cylMaterial = new THREE.MeshBasicMaterial({map: textureCyl});
-
+// BAT
 var BAT = new THREE.BoxGeometry( 10, 80, 10 );
 var mesh = new THREE.Mesh(BAT, cylMaterial);
 var BAT2 = new THREE.BoxGeometry( 100, 10, 10 );
 var mesh2 = new THREE.Mesh(BAT2, cylMaterial);
-
+//--------
 init();
 animate();
 /////////////////////////////////////////////////////////////////////////////////
@@ -85,9 +86,6 @@ function init(){
 	var light = new THREE.PointLight(0xb3ffff, 4, 100);
 	light.position.set(30, 60, -20);
 	scene.add(light);
-	var light2 = new THREE.PointLight(0xffffff, 0.3, 100);
-	light2.position.set(20, 50, -10);
-	scene.add(light2);
 	var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
 	scene.add( ambientLight );
 }
@@ -97,11 +95,13 @@ function update() {
 	if (mesh.position.z >= 40) {
 		if (mesh.position.x+10 >= camera.position.x && mesh.position.x-10 <= camera.position.x) {
 			console.log("impact");
+			MAIN++;
 		}
 	}
 	if (mesh2.position.z >= 40) {
 		if (mesh2.position.y+16 >= camera.position.y && mesh2.position.y <= camera.position.y) {
 			console.log("impact 2");
+			MAIN++;
 		}
 	}
 
@@ -123,7 +123,8 @@ function update() {
     // SPEED //
     document.getElementById("speed").innerHTML = Math.round(speed);
     speed+= 0.01;
-    if (speed >= 80) { moveSpeed = 2; }
+    if (speed >= 60) { moveSpeed = 2.5; }
+    if (speed >= 100) { moveSpeed = 5; }
     // SCORE //
 	document.getElementById("score").innerHTML = score;
 	score++;
@@ -149,10 +150,11 @@ function onDocumentKeyDown(event) {
 // ---------------------------------- RENDER ------------------------------------- //
 function animate() {
     requestAnimationFrame( animate );
-	render();	
-	update();		
+	render();
+	if (MAIN == 0) {	
+		update();
+	}		
 }
-
 function render() {
     renderer.render(scene, camera);  
 }
