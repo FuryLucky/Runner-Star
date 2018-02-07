@@ -7,13 +7,19 @@ var score = 0;
 var moveSpeed = 1.5;
 var speed = 30;
 
-var BAT = new THREE.BoxGeometry( 10, 80, 10 );
-var material = new THREE.MeshLambertMaterial({color:0x999966});
-var mesh = new THREE.Mesh(BAT, material);
-var BAT2 = new THREE.BoxGeometry( 100, 10, 10 );
-var mesh2 = new THREE.Mesh(BAT2, material);
-
 var aspect = window.innerWidth / window.innerHeight;
+
+var textureCity = THREE.ImageUtils.loadTexture('../assets/img/city.jpeg');
+var cityMaterial = new THREE.MeshBasicMaterial({map: textureCity});
+var textureWall = THREE.ImageUtils.loadTexture('../assets/img/wall.jpeg');
+var wallMaterial = new THREE.MeshBasicMaterial({map: textureWall});
+var textureCyl = THREE.ImageUtils.loadTexture('../assets/img/cyl.png');
+var cylMaterial = new THREE.MeshBasicMaterial({map: textureCyl});
+
+var BAT = new THREE.BoxGeometry( 10, 80, 10 );
+var mesh = new THREE.Mesh(BAT, cylMaterial);
+var BAT2 = new THREE.BoxGeometry( 100, 10, 10 );
+var mesh2 = new THREE.Mesh(BAT2, cylMaterial);
 
 init();
 animate();
@@ -24,7 +30,7 @@ function init(){
 	scene = new THREE.Scene();
 	// CAMERA //
 	camera = new THREE.PerspectiveCamera( 75, aspect, 1, 5000 ); //Perspective
-	camera.position.set(0, 20, 50);
+	camera.position.set(0, 20, 60);
 	scene.add(camera);
 	// RENDERER //
 	renderer = new THREE.WebGLRenderer();
@@ -46,42 +52,40 @@ function init(){
 		});
 	});
 	// PLAN //
-	const plan = new THREE.PlaneGeometry( 100, 100, 10, 10 );
+	var plan = new THREE.PlaneGeometry( 100, 100, 10, 10 );
 	plan.rotateX(THREE.Math.degToRad(-90));
-	const PlaneMaterial = new THREE.MeshLambertMaterial({color:0x333333});
-	const PlaneMesh = new THREE.Mesh(plan, PlaneMaterial);
+	var PlaneMaterial = new THREE.MeshLambertMaterial({color:0x1a1a1a});
+	var PlaneMesh = new THREE.Mesh(plan, PlaneMaterial);
 	scene.add(PlaneMesh);
-	const Etoile = new THREE.PlaneGeometry( 100, 100, 10, 10 );
-	const EtoileMaterial = new THREE.MeshLambertMaterial({color:0x00001a});
-	const etoileMesh = new THREE.Mesh( Etoile, EtoileMaterial );
+	var Etoile = new THREE.PlaneGeometry( 100, 100, 10, 10 );
+	var etoileMesh = new THREE.Mesh( Etoile, cityMaterial );
 	etoileMesh.position.set(0, 50, -50);
 	scene.add( etoileMesh );
 	// BORD //
 	for (let i = 50; i >= -50; i-=100) {
-		const bord = new THREE.BoxGeometry(  1, 100, 100);
-		const material = new THREE.MeshLambertMaterial({color:0x999966});
-		const plat = new THREE.Mesh(bord, material);
+		var bord = new THREE.BoxGeometry(  1, 100, 100);
+		var plat = new THREE.Mesh(bord, wallMaterial);
 		plat.position.set( i, 50, 0 );
 		plat.rotateX(THREE.Math.degToRad(-90));
 		// plat.rotateY(THREE.Math.degToRad(-90));
 		scene.add(plat);
 	}
 	// LUNE //
-	const lune = new THREE.CircleGeometry( 5, 20 );
-	const SphereMaterial = new THREE.MeshBasicMaterial( {color: 0xe6ffff});
-	const sphereMesh = new THREE.Mesh( lune, SphereMaterial );
-	sphereMesh.position.set(30, 60, -30);
+	var lune = new THREE.CircleGeometry( 5, 20 );
+	var SphereMaterial = new THREE.MeshBasicMaterial( {color: 0xe6ffff});
+	var sphereMesh = new THREE.Mesh( lune, SphereMaterial );
+	sphereMesh.position.set(30, 60, -50);
 	scene.add( sphereMesh );
 	// BAT START //
-	mesh.position.set(-40+(Math.random()*80), 40, -50);
+	mesh.position.set(-40+(Math.random()*80), 40, -150);
 	scene.add(mesh);
-	mesh2.position.set(0, Math.random()*100, -100);
+	mesh2.position.set(0, Math.random()*100, -200);
 	scene.add(mesh2);
 	// LIGHT //
-	const light = new THREE.PointLight(0xb3ffff, 4, 100);
+	var light = new THREE.PointLight(0xb3ffff, 4, 100);
 	light.position.set(30, 60, -20);
 	scene.add(light);
-	const light2 = new THREE.PointLight(0xffffff, 0.3, 100);
+	var light2 = new THREE.PointLight(0xffffff, 0.3, 100);
 	light2.position.set(20, 50, -10);
 	scene.add(light2);
 	var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
