@@ -1,9 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////////
-var container, scene, camera, renderer, controls, stats, object;
+var container, scene, camera, renderer, controls, stats, object, starship;
 var clock = new THREE.Clock();
 var clock2 = new THREE.Clock();
-
-let starship;
 
 var score = 0;
 var moveSpeed = 1.5;
@@ -19,16 +17,20 @@ var aspect = window.innerWidth / window.innerHeight;
 
 init();
 animate();
-
+/////////////////////////////////////////////////////////////////////////////////
+// ---------------------------------- INIT ----------------------------------- //
 function init(){
 	// SCENE //
 	scene = new THREE.Scene();
-
 	// CAMERA //
 	camera = new THREE.PerspectiveCamera( 75, aspect, 1, 5000 ); //Perspective
 	camera.position.set(0, 20, 50);
 	scene.add(camera);
-
+	// RENDERER //
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	document.body.appendChild(renderer.domElement);
+	//------------------------- MESH ---//
 	// STARSHIP //
 	var mtlLoader = new THREE.MTLLoader();
 	mtlLoader.load( '../assets/models/SuperStarShip.mtl', function( materials ) {
@@ -43,12 +45,6 @@ function init(){
 			camera.add( starship );
 		});
 	});
-
-	// RENDERER //
-	renderer = new THREE.WebGLRenderer();
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	document.body.appendChild(renderer.domElement);
-
 	// PLAN //
 	const plan = new THREE.PlaneGeometry( 100, 100, 10, 10 );
 	plan.rotateX(THREE.Math.degToRad(-90));
@@ -76,13 +72,11 @@ function init(){
 	const sphereMesh = new THREE.Mesh( lune, SphereMaterial );
 	sphereMesh.position.set(30, 60, -30);
 	scene.add( sphereMesh );
-
 	// BAT START //
 	mesh.position.set(-40+(Math.random()*80), 40, -50);
 	scene.add(mesh);
 	mesh2.position.set(0, Math.random()*100, -100);
 	scene.add(mesh2);
-
 	// LIGHT //
 	const light = new THREE.PointLight(0xb3ffff, 4, 100);
 	light.position.set(30, 60, -20);
@@ -93,9 +87,9 @@ function init(){
 	var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
 	scene.add( ambientLight );
 }
-
+// -------------------------------- UPDATE ---------------------------------- //
 function update() {
-
+	// COLLISION //
 	if (mesh.position.z >= 40) {
 		if (mesh.position.x+10 >= camera.position.x && mesh.position.x-10 <= camera.position.x) {
 			console.log("impact");
@@ -122,7 +116,6 @@ function update() {
     	mesh2.position.set(0, Math.random()*100, -50);
     	scene.add(mesh2);
     }
-	
     // SPEED //
     document.getElementById("speed").innerHTML = Math.round(speed);
     speed+= 0.01;
@@ -131,8 +124,7 @@ function update() {
 	document.getElementById("score").innerHTML = score;
 	score++;
 }
-
-// MOVE //
+// ---------------------------------- MOVE ------------------------------------- //
 document.addEventListener("keydown", onDocumentKeyDown, false);
 function onDocumentKeyDown(event) {
     var keyCode = event.which;
@@ -150,7 +142,7 @@ function onDocumentKeyDown(event) {
         starship.rotation.z = THREE.Math.degToRad(-20);
     }
 }
-
+// ---------------------------------- RENDER ------------------------------------- //
 function animate() {
     requestAnimationFrame( animate );
 	render();	
