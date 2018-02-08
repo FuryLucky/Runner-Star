@@ -1,29 +1,3 @@
-//////////////////////////////////////////////////////////////////////////////////
-var container, scene, camera, renderer, controls, stats, object, starship, particle;
-var clock = new THREE.Clock();
-var clock2 = new THREE.Clock();
-
-var MAIN = 0;
-var score = 0;
-var moveSpeed = 1.5;
-var speed = 30;
-
-var aspect = window.innerWidth / window.innerHeight;
-// TEXTURE
-var textureCity = THREE.ImageUtils.loadTexture('../assets/img/city.jpeg');
-var cityMaterial = new THREE.MeshBasicMaterial({map: textureCity});
-var textureWall = THREE.ImageUtils.loadTexture('../assets/img/wall.jpeg');
-var wallMaterial = new THREE.MeshBasicMaterial({map: textureWall});
-var textureCyl = THREE.ImageUtils.loadTexture('../assets/img/cyl.png');
-var cylMaterial = new THREE.MeshBasicMaterial({map: textureCyl});
-// BAT
-var BAT = new THREE.BoxGeometry( 10, 80, 10 );
-var mesh = new THREE.Mesh(BAT, cylMaterial);
-var BAT2 = new THREE.BoxGeometry( 100, 10, 10 );
-var mesh2 = new THREE.Mesh(BAT2, cylMaterial);
-//--------
-init();
-animate();
 /////////////////////////////////////////////////////////////////////////////////
 // ---------------------------------- INIT ----------------------------------- //
 function init(){
@@ -77,11 +51,6 @@ function init(){
 	var sphereMesh = new THREE.Mesh( lune, SphereMaterial );
 	sphereMesh.position.set(30, 60, -50);
 	scene.add( sphereMesh );
-	// BAT START //
-	mesh.position.set(-40+(Math.random()*80), 40, -150);
-	scene.add(mesh);
-	mesh2.position.set(0, Math.random()*100, -200);
-	scene.add(mesh2);
 	// LIGHT //
 	var light = new THREE.PointLight(0xb3ffff, 4, 100);
 	light.position.set(30, 60, -20);
@@ -92,16 +61,14 @@ function init(){
 // -------------------------------- UPDATE ---------------------------------- //
 function update() {
 	// COLLISION //
-	if (mesh.position.z >= 40) {
+	if (mesh.position.z >= 40 ) {
 		if (mesh.position.x+10 >= camera.position.x && mesh.position.x-10 <= camera.position.x) {
-			console.log("impact");
-			MAIN++;
+			collision();
 		}
 	}
 	if (mesh2.position.z >= 40) {
 		if (mesh2.position.y+16 >= camera.position.y && mesh2.position.y <= camera.position.y) {
-			console.log("impact 2");
-			MAIN++;
+			collision();
 		}
 	}
 
@@ -120,6 +87,7 @@ function update() {
     	mesh2.position.set(0, Math.random()*100, -50);
     	scene.add(mesh2);
     }
+    
     // SPEED //
     document.getElementById("speed").innerHTML = Math.round(speed);
     speed+= 0.01;
@@ -129,7 +97,7 @@ function update() {
 	document.getElementById("score").innerHTML = score;
 	score++;
 }
-// ---------------------------------- MOVE ------------------------------------- //
+// ----------------------------------- MOVE -------------------------------------- //
 document.addEventListener("keydown", onDocumentKeyDown, false);
 function onDocumentKeyDown(event) {
     var keyCode = event.which;
@@ -146,6 +114,13 @@ function onDocumentKeyDown(event) {
         camera.position.x += moveSpeed;
         starship.rotation.z = THREE.Math.degToRad(-20);
     }
+}
+// ---------------------------------- COLLISION ---------------------------------- //
+function collision() {
+	MAIN++;
+	document.getElementById('hub').style.cssText = 'visibility: visible;';
+	document.getElementById("mainScore").innerHTML = score;
+	document.getElementById("mainSpeed").innerHTML = Math.round(speed);
 }
 // ---------------------------------- RENDER ------------------------------------- //
 function animate() {
