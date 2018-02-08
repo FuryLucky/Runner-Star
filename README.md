@@ -1,5 +1,5 @@
 # Runner-Star
-3D game with WebGL
+3D game - WebGL
 
 
 Déplacement avec les flèches
